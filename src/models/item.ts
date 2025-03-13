@@ -54,7 +54,7 @@ import EyeDropsPath from '../assets/images/items/eyedrops.png';
 
 export type Item = {
     name: string;
-    path: string;
+    path: string | null;
 }
 
 export type Slot = {
@@ -274,6 +274,10 @@ export const Items = {
         name: 'eye-drops',
         path: EyeDropsPath,
     },
+    Empty: {
+        name: 'empty',
+        path: null,
+    }
 } as const;
 
 type Store = {

@@ -5,9 +5,9 @@ const CButtonCanvas = styled('canvas')`
 `
 
 type Props = {
-    left: string;
-    down: string;
-    right: string;
+    left: string | null;
+    down: string | null;
+    right: string | null;
     onButtonClick: onButtonClickHandler;
 }
 
@@ -34,20 +34,26 @@ const EquipmentsImage = ({ left, down, right, onButtonClick }: Props) => {
             ctx.fill();
         });
 
-        leftImage.onload = () => {
-            ctx.drawImage(leftImage, gap, gap, r * 2, r * 2);
+        if (left) {
+            leftImage.onload = () => {
+                ctx.drawImage(leftImage, gap, gap, r * 2, r * 2);
+            }
+            leftImage.src = left;
         }
-        leftImage.src = left;
 
-        downImage.onload = () => {
-            ctx.drawImage(downImage, (gap * 2) + (r * 2), gap + r, r * 2, r * 2);
+        if (down) {
+            downImage.onload = () => {
+                ctx.drawImage(downImage, (gap * 2) + (r * 2), gap + r, r * 2, r * 2);
+            }
+            downImage.src = down;
         }
-        downImage.src = down;
 
-        rightImage.onload = () => {
-            ctx.drawImage(rightImage, (gap * 3) + (r * 2) * 2, gap, r * 2, r * 2);
+        if (right) {
+            rightImage.onload = () => {
+                ctx.drawImage(rightImage, (gap * 3) + (r * 2) * 2, gap, r * 2, r * 2);
+            }
+            rightImage.src = right;
         }
-        rightImage.src = right;
     }
 
     useEffect(() => {

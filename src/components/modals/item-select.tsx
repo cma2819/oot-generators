@@ -62,7 +62,7 @@ const MenuSlots: Slot[][] = [
     [{ items: [ Items.DekuStick ] }, { items: [ Items.DekuNut ] }, { items: [ Items.Bomb ] }, { items: [ Items.Bow ] }, { items: [ Items.FireArrow ] }, { items: [ Items.DinsFire ] }],
     [{ items: [ Items.Slingshot ] }, { items: [ Items.FairyOcarina, Items.OcarinaOfTime ] }, { items: [ Items.Bombchu ] }, { items: [ Items.Hookshot, Items.Longshot ] }, { items: [ Items.IceArrow ] }, { items: [ Items.FroreWind ] } ],
     [{ items: [ Items.Boomerang ] }, { items: [ Items.TruthLens ] }, { items: [ Items.MagicBeans ] }, { items: [ Items.Hammer ] }, { items: [ Items.LightArrow ] }, { items: [ Items.NayruLove ] },],
-    [BottleSlot, BottleSlot, BottleSlot, BottleSlot, AdultTradeSlot, ChildTradeSlot]
+    [BottleSlot, AdultTradeSlot, ChildTradeSlot]
 ]
 
 const SlotImage = styled('img')`
@@ -71,6 +71,12 @@ const SlotImage = styled('img')`
         opacity: 1;
     }
 `
+
+const DeleteButton = ({ onSelect }: { onSelect: OnItemSelectHandler }) => {
+    return <Button sx={{ color: 'white'}} onClick={() => {
+        onSelect(Items.Empty);
+    }}>Empty</Button>
+}
 
 const SlotButton = ({ slot, onSelect }: { slot: Slot, onSelect: OnItemSelectHandler }) => {
     const [openModal, setOpenModal] = useState(false);
@@ -90,7 +96,7 @@ const SlotButton = ({ slot, onSelect }: { slot: Slot, onSelect: OnItemSelectHand
                     }
                 }}
             >
-                <SlotImage src={slot.items[0].path} />
+                <SlotImage src={slot.items[0].path ?? undefined} />
             </Button>
             {
                 slot.items.length > 1 && (
@@ -115,7 +121,7 @@ const SlotButton = ({ slot, onSelect }: { slot: Slot, onSelect: OnItemSelectHand
                                                 onSelect(i);
                                             }}
                                         >
-                                            <SlotImage src={i.path} />
+                                            <SlotImage src={i.path ?? undefined} />
                                         </Button>
                                     ))
                                 }
@@ -151,6 +157,7 @@ const ItemSelectModal = ({ open, onClose, onSelect }: Props) => {
                         </Stack>
                     )))
                 }
+                <DeleteButton onSelect={onSelect} />
             </Box>
         </Modal>
     )
