@@ -1,97 +1,37 @@
-import EquipmentsImage from './components/equipments-image'
-import ItemSelectModal from './components/modals/item-select';
-import { useEffect, useState } from 'react';
-import { fetchFromLocal, Item, Items, saveToLocal } from './models/item';
-import { Container, Typography } from '@mui/material';
-import Grid from '@mui/material/Grid2';
+import { useState, useEffect } from 'react';
+import Menu from './pages/Menu';
+import ItemEquipGenerator from './apps/item-equip-generator';
+import OcarinaMemorizer from './apps/ocarina-memo';
+import OcarinaPopup from './apps/ocarina-memo/popup';
 
 function App() {
-
-  const [left, setLeft] = useState<Item>();
-  const [down, setDown] = useState<Item>();
-  const [right, setRight] = useState<Item>();
-  const [editItem, setEditItem] = useState<'left'|'down'|'right'|null>(null);
+  const [currentPath, setCurrentPath] = useState(window.location.pathname);
 
   useEffect(() => {
-    const store = fetchFromLocal();
+    const handlePopState = () => {
+      setCurrentPath(window.location.pathname);
+    };
 
-    setLeft(store?.items.left ?? Items.DekuStick);
-    setDown(store?.items.down ?? Items.Hookshot);
-    setRight(store?.items.right ?? Items.LightArrow);
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
   }, []);
 
-  const loaded = (left && down && right);
+  // Simple client-side routing
+  const renderPage = () => {
+    switch (currentPath) {
+      case '/item-equip-generator':
+        return <ItemEquipGenerator />;
+      case '/ocarina-memo':
+        return <OcarinaMemorizer />;
+      case '/ocarina-memo/popup':
+        return <OcarinaPopup />;
+      case '/':
+      default:
+        return <Menu />;
+    }
+  };
 
-  return (
-    <Container maxWidth='md' sx={{
-      backgroundColor: 'white',
-    }}>
-      <Grid container sx={{
-        justifyContent: 'center',
-      }}>
-        <Typography variant='h2'>
-          OoT Item Equip Generator
-        </Typography>
-        <Grid>
-          {
-            loaded && (
-              <EquipmentsImage
-                left={left.path}
-                down={down.path}
-                right={right.path}
-                onButtonClick={(b) => {
-                  setEditItem(b);
-                }}
-              />
-            )
-          }
-        </Grid>
-      </Grid>
-        {
-          loaded && (
-            <ItemSelectModal
-              open={Boolean(editItem)}
-              onClose={() => { setEditItem(null) }}
-              onSelect={(item) => {
-                switch (editItem) {
-                  case 'left':
-                    setLeft(item);
-                    saveToLocal({
-                      items: {
-                        left: item,
-                        down,
-                        right,
-                      }
-                    })
-                    break;
-                  case 'down':
-                    setDown(item);
-                    saveToLocal({
-                      items: {
-                        left,
-                        down: item,
-                        right,
-                      }
-                    })
-                    break;
-                  case 'right':
-                    setRight(item);
-                    saveToLocal({
-                      items: {
-                        left,
-                        down,
-                        right: item,
-                      }
-                    })
-                    break;
-                }
-                setEditItem(null);
-              }}
-            />
-          )
-        }
-    </Container>
-  )
+  return renderPage();
 }
 
-export default App
+export default App;
